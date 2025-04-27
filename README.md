@@ -1,5 +1,5 @@
 <div style="text-align: center;">
-  <img src="https://github.com/user-attachments/assets/a78ca022-a7d6-480a-90a5-2ef0063dff2e" alt="Breakinator Logo" width="400"/>
+  <img src="https://github.com/user-attachments/assets/510c5d65-7168-4d98-b372-41d5dcbda1d6" alt="Breakinator Logo" width="400"/>
 </div>
 
 # The Breakinator
