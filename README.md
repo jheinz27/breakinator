@@ -1,13 +1,24 @@
+# The Breakinator
 <div style="text-align: center;">
   <img src="https://github.com/user-attachments/assets/447a923e-c4d1-4331-8a81-130f48144ca0" alt="Breakinator Logo" width="400"/>
 </div>
 
 The Breakinator identifies and flags putative artifact reads (foldbacks and chimeric) by parsing a PAF file.
 
-##installation
+## Installation
+
+```
+git clone git@github.com:jheinz27/breakinator.git
+cd breakinator
+```
+
+#### Prerequisites
+
+- Python 3.7 or higher  
 
 
-## usage
+## Usage
+```
 usage: breakinator.py [-h] -i FILE [-m INT] [-a INT] [--sym] [--margin FLOAT] [-o FILE] [--chim INT] [--fold INT] [--tabular]
 
 Flag foldbacks and chimeric reads from PAF input
@@ -23,3 +34,10 @@ optional arguments:
   --chim INT      Minimum distance to be considered chimeric
   --fold INT      Max distance to be considered foldback
   --tabular       Return report as a tsv file (useful for evaluating multiple files)
+```
+
+
+## optional symmetry filter for foldback artifacts
+<img width="742" alt="Screenshot 2025-05-09 at 10 15 35 AM" src="https://github.com/user-attachments/assets/c66855bb-5fbd-4143-a884-9bd200a4395f" />
+
+
