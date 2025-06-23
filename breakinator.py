@@ -3,7 +3,7 @@ import argparse
 
 #function to check if foldback occurs approximately symetrically in the read, if not, label read as Pass
 def check_sym(read_len, read_break): 
-    #consider symetric read if break occurs +/- 10% of middle of read
+    #consider symetric read if break occurs +/- 5% of middle of read
     read_len_range = [read_len/2 - fold_margin * read_len, read_len/2 + fold_margin * read_len]
     if read_len_range[0] < read_break < read_len_range[1]: 
         break_counts[1] += 1 
@@ -64,6 +64,9 @@ def breakpoint(cluster):
         label = check_artifact(brk_info, int(sort[i][1]), int(sort[i][3])) 
         all_labels.append(label)
         brk_info.append(label)
+        if rcoord: 
+            brk_info.append(sort[i][3])
+            brk_info.append(sort[i+1][2])
         outs.append(brk_info)
 
     return outs, all_labels
@@ -179,7 +182,8 @@ if __name__=="__main__":
     parser.add_argument('-m', metavar='INT', required= False, type=int, default = 10, help = 'Minimum mapping quality (integer)')
     parser.add_argument('-a', metavar='INT', required= False, type=int, default = 200, help = 'Minimum alignment length (bps)')
     parser.add_argument('--sym', action= "store_true",  help= 'Only report palindromic foldback reads within margin') 
-    parser.add_argument('--margin', metavar='FLOAT', required = False, type=float, default = 0.1, help='[0-1], With --sym, Proportion from center on either side to be considered foldback artifact' ) 
+    parser.add_argument('--rcoord', action= "store_true",  help= 'Print read coordinates of breakpoint in output') 
+    parser.add_argument('--margin', metavar='FLOAT', required = False, type=float, default = 0.05, help='[0-1], With --sym, Proportion from center on either side to be considered foldback artifact' ) 
     parser.add_argument('-o', metavar='FILE', required= False, type=str, default ='stdout.txt', help= 'Output file name' )
     parser.add_argument('--chim', metavar='INT', required= False, type=int, default = 1_000_000, help = 'Minimum distance to be considered chimeric')
     parser.add_argument('--fold', metavar='INT', required= False, type=int, default = 200, help = 'Max distance to be considered foldback')
@@ -195,6 +199,7 @@ if __name__=="__main__":
     max_fold = args.fold
     fold_margin = args.margin
     tabular = args.tabular
+    rcoord = args.rcoord
 
     if not 0<= fold_margin <=1: 
         parser.error('-margin must be [0-1]')
