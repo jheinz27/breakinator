@@ -11,7 +11,7 @@ The Breakinator identifies and flags putative artifact reads (foldbacks and chim
 ```
 git clone git@github.com:jheinz27/breakinator.git
 cd breakinator
-pythoh breakinator.py -h
+python breakinator.py -h
 ```
 
 #### Prerequisites
@@ -31,6 +31,7 @@ optional arguments:
   -m INT          Minimum mapping quality (integer)
   -a INT          Minimum alignment length (bps)
   --sym           Only report palindromic foldback reads within margin
+  --rcoord        Print read coordinates of breakpoint in output
   --margin FLOAT  [0-1], With --sym, Proportion from center on either side to be considered foldback artifact
   -o FILE         Output file name
   --chim INT      Minimum distance to be considered chimeric
