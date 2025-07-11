@@ -87,7 +87,7 @@ minimap2 -cx splice -uf -k14 -t 16 --secondary=no --paf-no-hit hg002v1.1.PATERNA
 diploidinator out_mat.paf out_pat.paf > out_haps_merge.paf
 ```
 ## Merging Breakpoints Into Consensus Locations
-To evaluate how many unique breakpoints are in the sample and how much read support they have, we developed a simple script to merge breakpoints together if they occur within 100bps (default `-w`) of eachother. We require at least 2 (default `-s`) 
+To evaluate how many unique breakpoints are in the sample and how much read support they have, we developed a simple script to merge breakpoints together if they occur within 100bps (default `-w`) of eachother. We require at least 2 reads (default `-s`) of support to report a consensus breakpoint location. 
 ```
 usage: merge_breaks.py [-h] -i <breakpoints.txt> [-w --merge_window] [-s --min_support] > merged_breaks.txt
 
