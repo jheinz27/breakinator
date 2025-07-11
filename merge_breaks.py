@@ -63,7 +63,7 @@ def merge_breaks(breakpoints, margin=100, support=2):
     return all_merges
 
 if __name__ == "__main__": 
-    parser = argparse.ArgumentParser(description='Identify Break Points from GAF input')
+    parser = argparse.ArgumentParser(description='Merge Break Points from Breakinator output')
     parser.add_argument('-i', metavar='<breakpoints.txt>', required=True, help='input breakinator stdout')
     parser.add_argument('-w', metavar= '--merge_window', required= False, type=int, default = 100, help = 'Size of window to merge break points in')
     parser.add_argument('-s', metavar= '--min_support', required= False, type=int, default = 2, help = 'minimum reads supporting breakpoint') 
