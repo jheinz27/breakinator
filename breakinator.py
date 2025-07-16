@@ -114,7 +114,39 @@ def update_read_labels(labels):
         read_counts[2] +=1  
     return 
 
-def main(paf):
+def main():
+    parser = argparse.ArgumentParser(description='Flag foldbacks and chimeric reads from PAF input')
+    parser.add_argument('-i', metavar='FILE', required=True, help='PAF file sorted by read IDs')
+    parser.add_argument('-m', metavar='INT', required= False, type=int, default = 10, help = 'Minimum mapping quality (integer)')
+    parser.add_argument('-a', metavar='INT', required= False, type=int, default = 200, help = 'Minimum alignment length (bps)')
+    parser.add_argument('--sym', action= "store_true",  help= 'Only report palindromic foldback reads within margin') 
+    parser.add_argument('--rcoord', action= "store_true",  help= 'Print read coordinates of breakpoint in output') 
+    parser.add_argument('--margin', metavar='FLOAT', required = False, type=float, default = 0.05, help='[0-1], With --sym, Proportion from center on either side to be considered foldback artifact' ) 
+    parser.add_argument('-o', metavar='FILE', required= False, type=str, default ='stdout.txt', help= 'Output file name' )
+    parser.add_argument('--chim', metavar='INT', required= False, type=int, default = 1_000_000, help = 'Minimum distance to be considered chimeric')
+    parser.add_argument('--fold', metavar='INT', required= False, type=int, default = 200, help = 'Max distance to be considered foldback')
+    parser.add_argument('--tabular', action= "store_true", help= 'Return report as a tsv file (useful for evaluating multiple files)')
+
+    args = parser.parse_args()
+    pafFile = args.i
+    min_mapQ = args.m
+    min_map_len = args.a
+    sym_filter = args.sym 
+    outFile = args.o
+    min_chim = args.chim
+    max_fold = args.fold
+    fold_margin = args.margin
+    tabular = args.tabular
+    rcoord = args.rcoord
+
+    if not 0<= fold_margin <=1: 
+        parser.error('-margin must be [0-1]')
+    
+    global read_counts
+    global break_counts
+    read_counts = [0,0,0] #[tot_reads_break, tot_reads_fold, tot_reads_chim]
+    break_counts = [0,0,0] #[tot_breaks, tot_folds, tot_chimeras]
+
     passed_filter_ids = []
     #read input PAF
     mapped_read_count = 0 
@@ -177,35 +209,4 @@ def main(paf):
         o.write('\n'.join(passed_filter_ids))
 
 if __name__=="__main__":
-    parser = argparse.ArgumentParser(description='Flag foldbacks and chimeric reads from PAF input')
-    parser.add_argument('-i', metavar='FILE', required=True, help='PAF file sorted by read IDs')
-    parser.add_argument('-m', metavar='INT', required= False, type=int, default = 10, help = 'Minimum mapping quality (integer)')
-    parser.add_argument('-a', metavar='INT', required= False, type=int, default = 200, help = 'Minimum alignment length (bps)')
-    parser.add_argument('--sym', action= "store_true",  help= 'Only report palindromic foldback reads within margin') 
-    parser.add_argument('--rcoord', action= "store_true",  help= 'Print read coordinates of breakpoint in output') 
-    parser.add_argument('--margin', metavar='FLOAT', required = False, type=float, default = 0.05, help='[0-1], With --sym, Proportion from center on either side to be considered foldback artifact' ) 
-    parser.add_argument('-o', metavar='FILE', required= False, type=str, default ='stdout.txt', help= 'Output file name' )
-    parser.add_argument('--chim', metavar='INT', required= False, type=int, default = 1_000_000, help = 'Minimum distance to be considered chimeric')
-    parser.add_argument('--fold', metavar='INT', required= False, type=int, default = 200, help = 'Max distance to be considered foldback')
-    parser.add_argument('--tabular', action= "store_true", help= 'Return report as a tsv file (useful for evaluating multiple files)')
-
-    args = parser.parse_args()
-    pafFile = args.i
-    min_mapQ = args.m
-    min_map_len = args.a
-    sym_filter = args.sym 
-    outFile = args.o
-    min_chim = args.chim
-    max_fold = args.fold
-    fold_margin = args.margin
-    tabular = args.tabular
-    rcoord = args.rcoord
-
-    if not 0<= fold_margin <=1: 
-        parser.error('-margin must be [0-1]')
-    
-    global read_counts
-    global break_counts
-    read_counts = [0,0,0] #[tot_reads_break, tot_reads_fold, tot_reads_chim]
-    break_counts = [0,0,0] #[tot_breaks, tot_folds, tot_chimeras]
-    main(pafFile)
+    main()
