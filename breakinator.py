@@ -2,7 +2,7 @@ import sys
 import argparse
 
 #function to check if foldback occurs approximately symetrically in the read, if not, label read as Pass
-def check_sym(read_len, read_break): 
+def check_sym(read_len, read_break, fold_margin): 
     #consider symetric read if break occurs +/- 5% of middle of read
     read_len_range = [read_len/2 - fold_margin * read_len, read_len/2 + fold_margin * read_len]
     if read_len_range[0] < read_break < read_len_range[1]: 
@@ -12,7 +12,7 @@ def check_sym(read_len, read_break):
         return 'Pass'
 
 #function to detect and return label of technical aritfact
-def check_artifact(brk,read_len, read_break, min_chim, max_fold, sym_filter):
+def check_artifact(brk,read_len, read_break, min_chim, max_fold, sym_filter, fold_margin):
     break_counts[0] += 1 
     if brk[0] != brk[3]: 
         break_counts[2] += 1
@@ -23,7 +23,7 @@ def check_artifact(brk,read_len, read_break, min_chim, max_fold, sym_filter):
     elif (brk[2] == '<>' or brk[2] == '><') and abs(int(brk[4]) - int(brk[1])) <= max_fold:
         #check if entire read is approximately palindromic if sym filter specified 
         if sym_filter: 
-            return check_sym(read_len, read_break)
+            return check_sym(read_len, read_break, fold_margin)
         else:
             break_counts[1] += 1 
             return 'Foldback'
@@ -32,7 +32,7 @@ def check_artifact(brk,read_len, read_break, min_chim, max_fold, sym_filter):
 
 #function to take in all split alignments of one read
 #returns break point in read 
-def breakpoint(cluster, min_chim, max_fold, sym_filter, rcoord): 
+def breakpoint(cluster, min_chim, max_fold, sym_filter, rcoord, fold_margin): 
     #sort by start location of aligment in read 
     sort = sorted(cluster, key = lambda x: int(x[2]))
     all_labels = []
@@ -61,7 +61,7 @@ def breakpoint(cluster, min_chim, max_fold, sym_filter, rcoord):
         directs = ''.join(directions)
 
         brk_info = [b1[0], b1[1], directs, b2[0], b2[1],str(min([int(sort[i][11]),int(sort[i+1][11])])),cluster[0][0]]
-        label = check_artifact(brk_info, int(sort[i][1]), int(sort[i][3]), min_chim, max_fold, sym_filter) 
+        label = check_artifact(brk_info, int(sort[i][1]), int(sort[i][3]), min_chim, max_fold, sym_filter, fold_margin) 
         all_labels.append(label)
         brk_info.append(label)
         if rcoord: 
@@ -171,7 +171,7 @@ def main():
                 mapped_read_count += 1 
                 passed_filter_ids.append(s[0].strip())
                 if len(clust) > 1: 
-                    out, labels = breakpoint(clust, min_chim, max_fold, sym_filter, rcoord)
+                    out, labels = breakpoint(clust, min_chim, max_fold, sym_filter, rcoord, fold_margin)
                     read_counts[0] += 1 
                     update_read_labels(labels) 
                     for o in out:
@@ -183,7 +183,7 @@ def main():
         mapped_read_count += 1
         passed_filter_ids.append(s[0].strip())
     if len(clust) > 1:
-        out, labels = breakpoint(clust, min_chim, max_fold, sym_filter, rcoord)
+        out, labels = breakpoint(clust, min_chim, max_fold, sym_filter, rcoord, fold_margin)
         read_counts[0] += 1 
         update_read_labels(labels)
         for o in out:
