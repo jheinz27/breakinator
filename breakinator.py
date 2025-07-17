@@ -12,7 +12,7 @@ def check_sym(read_len, read_break):
         return 'Pass'
 
 #function to detect and return label of technical aritfact
-def check_artifact(brk,read_len, read_break):
+def check_artifact(brk,read_len, read_break, min_chim, max_fold, sym_filter):
     break_counts[0] += 1 
     if brk[0] != brk[3]: 
         break_counts[2] += 1
@@ -32,7 +32,7 @@ def check_artifact(brk,read_len, read_break):
 
 #function to take in all split alignments of one read
 #returns break point in read 
-def breakpoint(cluster): 
+def breakpoint(cluster, min_chim, max_fold, sym_filter, rcoord): 
     #sort by start location of aligment in read 
     sort = sorted(cluster, key = lambda x: int(x[2]))
     all_labels = []
@@ -61,7 +61,7 @@ def breakpoint(cluster):
         directs = ''.join(directions)
 
         brk_info = [b1[0], b1[1], directs, b2[0], b2[1],str(min([int(sort[i][11]),int(sort[i+1][11])])),cluster[0][0]]
-        label = check_artifact(brk_info, int(sort[i][1]), int(sort[i][3])) 
+        label = check_artifact(brk_info, int(sort[i][1]), int(sort[i][3]), min_chim, max_fold, sym_filter) 
         all_labels.append(label)
         brk_info.append(label)
         if rcoord: 
@@ -75,10 +75,10 @@ def get_percent(a,b):
     return str(round(100*a/b,3)) + '%'
 
 #function to generate terminal output from 
-def make_report(stats):
+def make_report(stats, min_mapQ,min_map_len ):
     report = ['*'*100,'Summary report:']
     report.append('Command: ' + ' '.join(sys.argv))
-    report.append(f'Filtering criteria: MapQ >= {min_mapQ} and min_alignment_len >{min_map_len}\n\nResults:\n' + '-' *15)
+    report.append(f'Filtering criteria: MapQ >= {min_mapQ} and min_alignment_len > {min_map_len}\n\nResults:\n' + '-' *15)
     report.append(f'Num reads passed filter: {stats[0]:,}') 
     report.append(f'Num breakpoints detected: {stats[1]:,} on {stats[2]:,} unique reads')
     report.append('\nFoldback artifacts:')
@@ -115,6 +115,7 @@ def update_read_labels(labels):
     return 
 
 def main():
+
     parser = argparse.ArgumentParser(description='Flag foldbacks and chimeric reads from PAF input')
     parser.add_argument('-i', metavar='FILE', required=True, help='PAF file sorted by read IDs')
     parser.add_argument('-m', metavar='INT', required= False, type=int, default = 10, help = 'Minimum mapping quality (integer)')
@@ -128,7 +129,7 @@ def main():
     parser.add_argument('--tabular', action= "store_true", help= 'Return report as a tsv file (useful for evaluating multiple files)')
 
     args = parser.parse_args()
-    pafFile = args.i
+    paf = args.i
     min_mapQ = args.m
     min_map_len = args.a
     sym_filter = args.sym 
@@ -170,7 +171,7 @@ def main():
                 mapped_read_count += 1 
                 passed_filter_ids.append(s[0].strip())
                 if len(clust) > 1: 
-                    out, labels = breakpoint(clust)
+                    out, labels = breakpoint(clust, min_chim, max_fold, sym_filter, rcoord)
                     read_counts[0] += 1 
                     update_read_labels(labels) 
                     for o in out:
@@ -182,7 +183,7 @@ def main():
         mapped_read_count += 1
         passed_filter_ids.append(s[0].strip())
     if len(clust) > 1:
-        out, labels = breakpoint(clust)
+        out, labels = breakpoint(clust, min_chim, max_fold, sym_filter, rcoord)
         read_counts[0] += 1 
         update_read_labels(labels)
         for o in out:
@@ -197,12 +198,12 @@ def main():
     
     #[#Reads_passed,all_break,Uniq_artifact_reads,Fold_reads, Fold_reads%, Fold_breaks,Fold_breaks%,Chim_reads,Chim_reads%,Chim_breaks,Chim_breaks%, sample]'
     vals = [mapped_read_count, break_counts[0],read_counts[0], read_counts[1], get_percent(read_counts[1], mapped_read_count),  break_counts[1],get_percent(break_counts[1], break_counts[0]),
-             read_counts[2], get_percent(read_counts[2], mapped_read_count), break_counts[2], get_percent(break_counts[2], break_counts[0]), pafFile]
+             read_counts[2], get_percent(read_counts[2], mapped_read_count), break_counts[2], get_percent(break_counts[2], break_counts[0]), paf]
     if tabular:
         sys.stdout.write('#Reads_passed\tall_break\tUniq_artifact_reads\tFold_reads\tFold_reads%\tFold_breaks\tFold_breaks%\tChim_reads\tChim_reads%\tChim_breaks\tChim_breaks%\tsample\n')
         sys.stdout.write('\t'.join(str(v) for v  in vals) + '\n')  
     else:
-        report_out = make_report(vals)
+        report_out = make_report(vals, min_mapQ, min_map_len)
         sys.stdout.write('\n'.join(report_out) + '\n')
 
     with open('reads_passed_our_filter.txt', 'w') as o: 
