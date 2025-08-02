@@ -102,6 +102,6 @@ optional arguments:
 
 
 ## Citation
-If the Breakinator has helped you in your research, please cite our preprint at: 
+If the Breakinator has helped you in your research, please cite our preprint at: https://www.biorxiv.org/content/10.1101/2025.07.15.664946v1.abstract
 
 
