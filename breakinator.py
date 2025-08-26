@@ -160,7 +160,7 @@ def main():
             lowQ = False
             s = line.strip().split('\t')
             #skip read alignments that fail length or mapQ filters or is secondary alignment 
-            if int(s[11]) < min_mapQ or (int(s[3])  - int(s[2]) <= min_map_len) :
+            if int(s[11]) < min_mapQ or (int(s[3])  - int(s[2]) < min_map_len) :
                 lowQ = True
                 continue
             #group aligments of read by read ID
