@@ -54,6 +54,8 @@ optional arguments:
   --tabular       Return report as a tsv file (useful for evaluating multiple files)
 ```
 
+I have reimplimented the Breakinator in Rust, which can be compiled from source in `/breakinator_rust` and provided static binaries of the Rust code as a prerelease. 
+
 ## Optional symmetry filter for foldback artifacts
 
 If running on a sample where you expect there may be true foldback events (e.g cancer data) we recommend using the `--sym` flag to only consider reads that have the foldback withing 5% (change with `--margin`) on either side of the middle of the read as foldback artifacts. See diagram below. 
