@@ -188,6 +188,9 @@ def main():
         update_read_labels(labels)
         for o in out:
             all_breaks.append(o)
+    with open('passed_filter.txt', 'w') as filtout: 
+        for a in passed_filter_ids: 
+            filtout.write(a+'\n')
 
     #write read ID and break point, and artifact flag
     with open(outFile, 'w') as read_results:
