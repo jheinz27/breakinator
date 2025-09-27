@@ -8,15 +8,37 @@ The Breakinator identifies and flags putative artifact reads (foldbacks and chim
 
 ## Installation
 
+### Prebuilt Binaries
+
+Prebuilt binaries can be downloaded from the [Releases](../../releases) page.
+
 ```
-git clone git@github.com:jheinz27/breakinator.git
-cd breakinator
+wget https://github.com/jheinz27/breakinator/releases/download/v{x.y.z}/breakinator-v{x.y.z}-{system}.tar.gz
+tar -xvzf breakinator-v{x.y.z}-{system}.tar.gz
+./breakinator --help
+```
+
+### Install from source
+
+```
+git clone https://github.com/jheinz27/breakinator
+cd breakinator/breakinator
+cargo build --release
+./target/release/breakinator --help
+```
+#### Prerequisites
+- Rust programming language >= v1.70
+
+### Python version
+A Python version of the Breakinator is also available: 
+
+```
+git clone https://github.com/jheinz27/breakinator
+cd py_breakinator
 python breakinator.py -h
 ```
-
 #### Prerequisites
-
-- Python 3.7 or higher  
+- Python >= 3.7 
 
 ## Generating PAF files
 
@@ -36,32 +58,29 @@ paftools.js sam2paf -p alignments.sam > alignments.paf
 
 ## Breakinator Usage
 ```
-usage: breakinator.py [-h] -i FILE [-m INT] [-a INT] [--sym] [--rcoord] [--margin FLOAT] [-o FILE] [--chim INT] [--fold INT] [--tabular]
+Usage: breakinator [OPTIONS] --input <FILE>
 
-Flag foldbacks and chimeric reads from PAF input
-
-optional arguments:
-  -h, --help      show this help message and exit
-  -i FILE         PAF file sorted by read IDs
-  -m INT          Minimum mapping quality (integer)
-  -a INT          Minimum alignment length (bps)
-  --sym           Only report palindromic foldback reads within margin
-  --rcoord        Print read coordinates of breakpoint in output
-  --margin FLOAT  [0-1], With --sym, Proportion from center on either side to be considered foldback artifact
-  -o FILE         Output file name
-  --chim INT      Minimum distance to be considered chimeric
-  --fold INT      Max distance to be considered foldback
-  --tabular       Return report as a tsv file (useful for evaluating multiple files)
+Options:
+  -i, --input <FILE>       PAF file sorted by read IDs
+  -q, --min-mapq <INT>     Minimum mapping quality [default: 10]
+  -a, --min-map-len <INT>  Minimum alignment length (bps) [default: 200]
+      --sym                Only report palindromic foldback reads within margin
+  -m, --margin <FLOAT>     [0-1], With --sym, Proportion from center on either side to be considered foldback artifact [default: 0.05]
+      --rcoord             Print read coordinates of breakpoint in output
+  -o, --out <FILE>         Output file name [default: breakinator_out.txt]
+  -c, --chim <INT>         Minimum distance to be considered chimeric [default: 1000000]
+  -f, --fold <INT>         Max distance to be considered foldback [default: 200]
+      --tabular            Print a TSV table instead of the default report (useful if evaluating multiple samples)
+  -h, --help               Print help
+  -V, --version            Print version
 ```
-
-I have reimplimented the Breakinator in Rust, which can be compiled from source in `/breakinator_rust` and provided static binaries of the Rust code as a prerelease. 
 
 ## Optional symmetry filter for foldback artifacts
 
 If running on a sample where you expect there may be true foldback events (e.g cancer data) we recommend using the `--sym` flag to only consider reads that have the foldback withing 5% (change with `--margin`) on either side of the middle of the read as foldback artifacts. See diagram below. 
 
 ```
-python breakinator.py -i alignments.paf --sym --margin 0.03
+./breakinator -i alignments.paf --sym --margin 0.03
 ```
 <img width="742" alt="Screenshot 2025-05-09 at 10 15 35 AM" src="https://github.com/user-attachments/assets/c66855bb-5fbd-4143-a884-9bd200a4395f" />
 
@@ -74,7 +93,7 @@ Minimap2 was not designed for diploid assemblies(eg. [HG002](https://github.com/
 ## Diploidinator Installation
 
 ``` 
-git clone git@github.com:jheinz27/breakinator.git
+git clone https://github.com/jheinz27/breakinator
 cd breakinator/diploidinator
 cargo build --release
 ./target/release/diploidinator
@@ -104,6 +123,6 @@ optional arguments:
 
 
 ## Citation
-If the Breakinator has helped you in your research, please cite our preprint at: https://www.biorxiv.org/content/10.1101/2025.07.15.664946v1.abstract
+If the Breakinator has helped you in your research, please cite our preprint at: https://www.biorxiv.org/content/10.1101/2025.07.15.664946v2.abstract
 
 
