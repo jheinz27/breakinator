@@ -28,4 +28,5 @@ minimap2 -cx splice -uf -k14 -t 16 --secondary=no --paf-no-hit hg002v1.1.MATERNA
 minimap2 -cx splice -uf -k14 -t 16 --secondary=no --paf-no-hit hg002v1.1.PATERNAL.fasta reads.fastq > out_pat.paf 
 diploidinator out_mat.paf out_pat.paf > out_haps_merge.paf
 ```
+The `--max` flag can be added to the diploidinator to choose the haplotype assignment that results in the alignment block with the higest AS score, rather than the higest sum of AS scores in a split alignmentas is the default.  
 

@@ -25,7 +25,7 @@ where
 }
 
 //helper function to get score of split reads
-pub fn get_as(cur_clust : &Vec<String>) -> i32 {
+fn get_as(cur_clust : &Vec<String>) -> i32 {
     let mut sum = 0; 
     for alignment in cur_clust {
         let field = alignment.split('\t').nth(14).unwrap(); 
@@ -34,16 +34,32 @@ pub fn get_as(cur_clust : &Vec<String>) -> i32 {
     return sum 
 }
 
-pub fn compare_clusters<'a>(clust1:&'a Vec<String>, clust2:&'a Vec<String>) -> Option<&'a Vec<String>> {
+//helper function to get score of split reads
+fn get_as_max(cur_clust : &Vec<String>) -> i32 {
+    let mut max = 0; 
+    for alignment in cur_clust {
+        let field = alignment.split('\t').nth(14).unwrap(); 
+        let val = field.split(':').nth(2).unwrap().parse::<i32>().unwrap(); 
+        if val > max {
+            max = val; 
+        }
+    }
+    return max 
+}
+
+pub fn compare_clusters<'a>(clust1:&'a Vec<String>, clust2:&'a Vec<String>, max_flag:bool) -> Option<&'a Vec<String>> {
     match (clust1[0].split('\t').nth(4), clust2[0].split('\t').nth(4)) {
         (Some("*"), Some("*")) => return None, // both reads unmapped
         (Some("*"), _) => return Some(clust2), // hap1 unmapped
         (_, Some("*")) => return Some(clust1), // hap2 unmapped
         _ => {} // Continue if mapped to both haps 
-    }
+    } 
     
-    let score1 = get_as(&clust1); 
-    let score2 = get_as(&clust2); 
+    let (score1, score2) = if max_flag {
+        (get_as_max(&clust1), get_as_max(&clust2))
+    } else {
+        (get_as(&clust1), get_as(&clust2))
+    };
 
     Some(if score1 >= score2 {clust1} else {clust2})
 } 
