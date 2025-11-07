@@ -61,5 +61,30 @@ pub fn compare_clusters<'a>(clust1:&'a Vec<String>, clust2:&'a Vec<String>, max_
         (get_as(&clust1), get_as(&clust2))
     };
 
+    //choose clust1 if it has one read that is a single end to end alignment (over 95% of read) and clust 2 is chimeric
+    if clust1.len() == 1 && clust2.len() > 1 {
+        let read_len = clust1[0].split('\t').nth(1).unwrap().parse::<f32>().unwrap(); 
+        let alignment_start = clust1[0].split('\t').nth(2).unwrap().parse::<i32>().unwrap(); 
+        let alignment_end = clust1[0].split('\t').nth(3).unwrap().parse::<i32>().unwrap();
+        let alignment_len = (alignment_end - alignment_start) as f32; 
+        if (alignment_len / read_len) > 0.95 {
+            return Some(clust1); 
+        }
+    }
+    
+    if clust2.len() == 1 && clust1.len() > 1 {
+        //as above, but clust 2 is the end to end alignment
+        let read_len = clust2[0].split('\t').nth(1).unwrap().parse::<f32>().unwrap(); 
+        let alignment_start = clust2[0].split('\t').nth(2).unwrap().parse::<i32>().unwrap(); 
+        let alignment_end = clust2[0].split('\t').nth(3).unwrap().parse::<i32>().unwrap();
+        let alignment_len = (alignment_end - alignment_start) as f32; 
+        if (alignment_len / read_len) > 0.95 {
+            return Some(clust2); 
+        }
+    }
+   
     Some(if score1 >= score2 {clust1} else {clust2})
+    
+
+
 } 
