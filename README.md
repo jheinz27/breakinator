@@ -4,7 +4,7 @@
 </div>
 
 # The Breakinator
-The Breakinator identifies and flags putative artifact reads (foldbacks and chimeric) by parsing a PAF file.
+The Breakinator identifies and flags putative artifact reads (foldbacks and chimeric) by parsing SAM/BAM/CRAM or PAF alignment files.
 
 ## Installation
 
@@ -19,7 +19,6 @@ tar -xvzf breakinator-v{x.y.z}-{system}.tar.gz
 ```
 
 ### Install from source
-
 ```
 git clone https://github.com/jheinz27/breakinator
 cd breakinator/breakinator
@@ -28,8 +27,45 @@ cargo build --release
 ```
 #### Prerequisites
 - Rust programming language >= v1.70
+- clap = "4.0" 
+- rust-htslib = "0.46.0"
+## Breakinator Usage
+```
+Usage: breakinator [OPTIONS] --input <FILE>
 
-### Python version
+Options:
+  -i, --input <FILE>       SAM/BAM/CRAM file sorted by read IDs
+      --paf                Input file is PAF
+  -q, --min-mapq <INT>     Minimum mapping quality [default: 10]
+  -a, --min-map-len <INT>  Minimum alignment length (bps) [default: 200]
+      --no-sym             Report all foldback reads, not just those with breakpoint within margin of middle of read
+  -g, --genome <FASTA>     Reference genome FASTA used (must be provided for CRAM input
+  -m, --margin <FLOAT>     [0-1], Proportion from center of read on either side to be considered sym foldback artifact [default: 0.1]
+      --rcoord             Print read coordinates of breakpoint in output
+  -o, --out <FILE>         Output file name [default: breakinator_out.txt]
+  -c, --chim <INT>         Minimum distance to be considered chimeric [default: 1000000]
+  -f, --fold <INT>         Max distance to be considered foldback [default: 200]
+      --tabular            Print a TSV table instead of the default report (useful if evaluating multiple samples)
+  -t, --threads <INT>      Number of threads to use for BAM/CRAM I/O [default: 2]
+  -h, --help               Print help
+  -V, --version            Print version
+```
+### Example Usage 
+
+It is important to note that Breakinator currently only supports name-sorted files (the default output of minimap2) as it only parses one sequential group of lines with the same read ID at a time to avoid reading the whole file into memory, so breakinator should be run before any sorting of the file. 
+
+#### For SAM/BAM/CRAM
+```
+minimap2 -ax map-ont  genome.fa reads.fastq > alignments.sam
+./breakinator -i alignments.sam -o breakinator_out.txt
+```
+#### For PAF (include `--paf` flag)
+```
+minimap2 -cx map-ont --secondary=no genome.fa reads.fastq > alignments.paf
+./breakinator -i alignments.sam --paf -o breakinator_out.txt
+```
+
+### Python version (no longer supported)
 A Python version of the Breakinator is also available: 
 
 ```
@@ -42,7 +78,7 @@ python breakinator.py -h
 
 ## Generating PAF files
 
-To generate the PAF files to input to the Breakinator, we recommend using [minimap2](https://github.com/lh3/minimap2) with the `-c` and `--secondary=no` parameters. Seecondary alignments will be ignored by the Breakinator, however including them will increase the processing time. 
+The Breakinator can also handle PAF files to input to the Breakinator. To generate these, we recommend using [minimap2](https://github.com/lh3/minimap2) with the `-c` and `--secondary=no` parameters. Secondary alignments will be ignored by the Breakinator, however including them will increase the processing time. 
 
 Example:
 ```
@@ -56,31 +92,13 @@ Example:
 paftools.js sam2paf -p alignments.sam > alignments.paf
 ```
 
-## Breakinator Usage
-```
-Usage: breakinator [OPTIONS] --input <FILE>
 
-Options:
-  -i, --input <FILE>       PAF file sorted by read IDs
-  -q, --min-mapq <INT>     Minimum mapping quality [default: 10]
-  -a, --min-map-len <INT>  Minimum alignment length (bps) [default: 200]
-      --sym                Only report palindromic foldback reads within margin
-  -m, --margin <FLOAT>     [0-1], With --sym, Proportion from center on either side to be considered foldback artifact [default: 0.05]
-      --rcoord             Print read coordinates of breakpoint in output
-  -o, --out <FILE>         Output file name [default: breakinator_out.txt]
-  -c, --chim <INT>         Minimum distance to be considered chimeric [default: 1000000]
-  -f, --fold <INT>         Max distance to be considered foldback [default: 200]
-      --tabular            Print a TSV table instead of the default report (useful if evaluating multiple samples)
-  -h, --help               Print help
-  -V, --version            Print version
-```
+## Optional: turn off symmetry filter for foldback artifacts
 
-## Optional symmetry filter for foldback artifacts
-
-If running on a sample where you expect there may be true foldback events (e.g cancer data) we recommend using the `--sym` flag to only consider reads that have the foldback withing 5% (change with `--margin`) on either side of the middle of the read as foldback artifacts. See diagram below. 
+If running on a sample where you want to investiage all potential foldback events, we recommend turning off the symmetry filter with the `--no-sym` flag. 
 
 ```
-./breakinator -i alignments.paf --sym --margin 0.03
+./breakinator -i alignments.paf --no-sym
 ```
 <img width="742" alt="Screenshot 2025-05-09 at 10 15 35 AM" src="https://github.com/user-attachments/assets/c66855bb-5fbd-4143-a884-9bd200a4395f" />
 
@@ -120,7 +138,6 @@ optional arguments:
   -w --merge_window     Size of window to merge break points in
   -s --min_support      minimum reads supporting breakpoint
 ```
-
 
 ## Citation
 If the Breakinator has helped you in your research, please cite our preprint at: https://www.biorxiv.org/content/10.1101/2025.07.15.664946v2.abstract
