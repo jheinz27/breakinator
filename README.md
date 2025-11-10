@@ -15,7 +15,7 @@ Prebuilt binaries can be downloaded from the [Releases](../../releases) page.
 ```
 wget https://github.com/jheinz27/breakinator/releases/download/v{x.y.z}/breakinator-v{x.y.z}-{system}.tar.gz
 tar -xvzf breakinator-v{x.y.z}-{system}.tar.gz
-./breakinator --help
+breakinator-v{x.y.z}-{system}/bin/breakinator --help
 ```
 
 ### Install from source
