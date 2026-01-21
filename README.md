@@ -18,6 +18,11 @@ tar -xvzf breakinator-v{x.y.z}-{system}.tar.gz
 breakinator-v{x.y.z}-{system}/bin/breakinator --help
 ```
 
+### Bioconda
+```
+conda install -c bioconda -c conda-forge breakinator=1.1.1
+```
+
 ### Install from source
 ```
 git clone https://github.com/jheinz27/breakinator
@@ -25,6 +30,8 @@ cd breakinator/breakinator
 cargo build --release
 ./target/release/breakinator --help
 ```
+
+
 #### Prerequisites
 - Rust programming language >= v1.70
 - clap = "4.0" 
@@ -39,7 +46,7 @@ Options:
   -q, --min-mapq <INT>     Minimum mapping quality [default: 10]
   -a, --min-map-len <INT>  Minimum alignment length (bps) [default: 200]
       --no-sym             Report all foldback reads, not just those with breakpoint within margin of middle of read
-  -g, --genome <FASTA>     Reference genome FASTA used (must be provided for CRAM input
+  -g, --genome <FASTA>     Reference genome FASTA used (must be provided for CRAM input)
   -m, --margin <FLOAT>     [0-1], Proportion from center of read on either side to be considered sym foldback artifact [default: 0.1]
       --rcoord             Print read coordinates of breakpoint in output
   -o, --out <FILE>         Output file name [default: breakinator_out.txt]
@@ -64,17 +71,6 @@ minimap2 -ax map-ont  genome.fa reads.fastq > alignments.sam
 minimap2 -cx map-ont --secondary=no genome.fa reads.fastq > alignments.paf
 ./breakinator -i alignments.sam --paf -o breakinator_out.txt
 ```
-
-### Python version (no longer supported)
-A Python version of the Breakinator is also available: 
-
-```
-git clone https://github.com/jheinz27/breakinator
-cd py_breakinator
-python breakinator.py -h
-```
-#### Prerequisites
-- Python >= 3.7 
 
 ## Generating PAF files
 
