@@ -1,4 +1,8 @@
-# The diploid-inator
+# The diploid-inator (depricated) 
+## Please note this version of the Diploidinator is no longer recommended
+Insead please use:  [https://github.com/jheinz27/diplinator](https://github.com/jheinz27/diplinator)
+
+
 
 Most aligners were not designed for diploid assemblies(eg. [HG002](https://github.com/marbl/HG002)), so when aligning reads to a diploid assembly, the mapping quality for reads may be lower, as there are multiple locations the read can align to well. We have developed a simple script to align reads to each haploid of the diploid assembly and thne parse both paf files to choose the better alignment of the read based on the alignment score
 
