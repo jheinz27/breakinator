@@ -1,6 +1,6 @@
-# The diploid-inator (depricated) 
+# The diploid-inator (DEPRECATED) 
 ## Please note this version of the Diploidinator is no longer recommended
-Insead please use:  [https://github.com/jheinz27/diplinator](https://github.com/jheinz27/diplinator)
+Insead please use [HipHap](https://github.com/jheinz27/hiphap) for diploid genome alignments
 
 
 
