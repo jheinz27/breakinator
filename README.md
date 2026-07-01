@@ -98,29 +98,13 @@ If running on a sample where you want to investiage all potential foldback event
 ```
 <img width="742" alt="Screenshot 2025-05-09 at 10 15 35 AM" src="https://github.com/user-attachments/assets/c66855bb-5fbd-4143-a884-9bd200a4395f" />
 
-## Preprocessing for alignment to diploid genome assemblies with The Diploidinator
+## Preprocessing for alignment to diploid  assemblies with Diploidinator(DEPRECATED)
 
-Minimap2 was not designed for diploid assemblies(eg. [HG002](https://github.com/marbl/HG002)), so when aligning reads to a diploid assembly, the mapping quality for reads may be lower, as there are multiple locations the read can align to well. We have developed a simple rust script to align reads to each haploid of the diploid assembly and then parse both paf files to choose the better alignment of the read based on the alignment score. 
+**Diploidinator has been deprecated** 
 
----
+We recommend using [HipHap](https://github.com/jheinz27/hiphap) for diploid genome alignments.
 
-## Diploidinator Installation
 
-``` 
-git clone https://github.com/jheinz27/breakinator
-cd breakinator/diploidinator
-cargo build --release
-./target/release/diploidinator
-```
-
-## Diploidinator Example Usage
-
-NOTE: It is important to use the `--secondary=no` and `--paf-no-hit` flags when aligning with Minimap2. The diploidinator currently only works on paf files. 
-```
-minimap2 -cx splice -uf -k14 -t 16 --secondary=no --paf-no-hit hg002v1.1.MATERNAL.fasta read.fastq > out_mat.paf
-minimap2 -cx splice -uf -k14 -t 16 --secondary=no --paf-no-hit hg002v1.1.PATERNAL.fasta reads.fastq > out_pat.paf 
-diploidinator out_mat.paf out_pat.paf > out_haps_merge.paf
-```
 ## Merging Breakpoints Into Consensus Locations
 To evaluate how many unique breakpoints are in the sample and how much read support they have, we developed a simple script to merge breakpoints together if they occur within 100bps (default `-w`) of eachother. We require at least 2 reads (default `-s`) of support to report a consensus breakpoint location. 
 ```
