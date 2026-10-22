@@ -10,16 +10,26 @@ use rust_htslib::bam::HeaderView;
 use std::{fs::File, io::{BufWriter, Write}};
 use crate::{Breakpoint, classify_break, read_level_class, print_report, print_table};
 
-pub fn process_sam(args: &Cli, is_cram: bool) -> Result<(), Box<dyn std::error::Error>> { 
-    // read in file 
-    let mut sam_reader = bam::Reader::from_path(&args.input).expect("Failed to open file");
+pub fn process_sam(args: &Cli) -> Result<(), Box<dyn std::error::Error>> {
+    // read in file, "-" reads from stdin
+    let mut sam_reader = if args.input == "-" {
+        bam::Reader::from_stdin()?
+    } else {
+        bam::Reader::from_path(&args.input)?
+    };
     sam_reader.set_threads(args.threads)?;
-    // If CRAM, attach reference
-    if is_cram {
-        sam_reader.set_reference(args.genome.as_ref().unwrap())?;
+    // attach reference if given (needed for CRAM, ignored otherwise)
+    if let Some(genome) = &args.genome {
+        sam_reader.set_reference(genome)?;
     }
 
     let header = sam_reader.header().to_owned();
+    // warn if input is position sorted, reads must be grouped by read ID
+    let is_pos_sorted = String::from_utf8_lossy(header.as_bytes()).lines()
+        .any(|l| l.starts_with("@HD") && l.split('\t').any(|f| f == "SO:coordinate"));
+    if is_pos_sorted {
+        eprintln!("WARNING: input appears to be sorted by position. Reads must be grouped by read ID (e.g. samtools collate or samtools sort -n)");
+    }
     //let header: Header = Header::from_template(&hv); 
     //et mut out = Writer::from_stdout(&header, Format::Sam)?;
     let output = File::create(&args.out)?;
@@ -42,8 +52,12 @@ pub fn process_sam(args: &Cli, is_cram: bool) -> Result<(), Box<dyn std::error::
     let mut reads_pass_filter: u64 = 0; 
     
     while sam_iter.peek().is_some() { 
-        //move forward by one read group 
-        get_clusters(&mut sam_iter, &mut cluster)?;
+        //move forward by one read group
+        if let Err(e) = get_clusters(&mut sam_iter, &mut cluster) {
+            eprintln!("ERROR: failed to read alignment record from {}: {}", args.input, e);
+            eprintln!("If piping SAM text, make sure the header is included (e.g. samtools view -h)");
+            std::process::exit(1);
+        }
         let mut filtered = filter_alignments(&cluster, &args); 
         
         let num_pass = filtered.len(); 
@@ -75,8 +89,10 @@ where
 {
     cluster.clear();
 
-    if let Some(Ok(record)) = records.next() {
-        let cur_id = record.qname().to_vec(); 
+    if let Some(result) = records.next() {
+        //stop on unreadable record instead of silently skipping it
+        let record = result?;
+        let cur_id = record.qname().to_vec();
         cluster.push(record); 
         
         while let Some(Ok(next)) = records.peek() {

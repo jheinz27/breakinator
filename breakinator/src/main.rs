@@ -5,13 +5,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     //read in args 
     let args = Cli::parse();
     
-    if args.paf { 
-        if !args.input.to_lowercase().ends_with(".paf") {
+    let is_stdin = args.input == "-";
+    if args.paf {
+        if !is_stdin && !args.input.to_lowercase().ends_with(".paf") {
             eprintln!("ERROR: File name does not end in paf-ensure file is paf");
-        }   
+        }
         paf::process_paf(&args)?;
     } else {
-        if args.input.to_lowercase().ends_with(".paf") {
+        if !is_stdin && args.input.to_lowercase().ends_with(".paf") {
             eprintln!("ERROR: include --paf argument if running on paf file");
             std::process::exit(1);
         }   
@@ -21,7 +22,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             eprintln!("ERROR: --genome <FASTA> is required when reading CRAM files.");
             std::process::exit(1);
         }
-        sam::process_sam(&args, is_cram)?; 
+        sam::process_sam(&args)?;
     }
     Ok(())
 }

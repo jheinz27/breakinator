@@ -11,8 +11,13 @@ pub fn process_paf(args: &Cli) ->  Result<(), Box<dyn std::error::Error>>  {
         process::exit(1);
     }
 
-    let file = File::open(&args.input)?;
-    let mut reader = BufReader::new(file).lines().peekable();
+    // read in file, "-" reads from stdin
+    let input: Box<dyn BufRead> = if args.input == "-" {
+        Box::new(io::stdin().lock())
+    } else {
+        Box::new(BufReader::new(File::open(&args.input)?))
+    };
+    let mut reader = input.lines().peekable();
 
     let output = File::create(&args.out)?;
     let mut writer = BufWriter::new(output);

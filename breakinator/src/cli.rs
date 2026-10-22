@@ -2,7 +2,7 @@ use clap::Parser;
 
 
 #[derive(Parser, Debug)]
-#[command( name = "breakinator", about = "Flag foldbacks and chimeric reads from SAM/BAM/CRAM or PAF input", version = "1.0")]
+#[command( name = "breakinator", about = "Flag foldbacks and chimeric reads from SAM/BAM/CRAM or PAF input", version)]
 
 pub struct Cli {
     // 
