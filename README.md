@@ -10,17 +10,17 @@ The Breakinator identifies and flags putative artifact reads (foldbacks and chim
 
 ### Prebuilt Binaries
 
-Prebuilt binaries can be downloaded from the [Releases](../../releases) page.
+```
+wget https://github.com/jheinz27/breakinator/releases/download/v1.2.0/breakinator-v1.2.0-x86_64-unknown-linux-musl.tar.gz
+tar -xzf breakinator-v1.2.0-x86_64-unknown-linux-musl.tar.gz
+./breakinator-v1.2.0-x86_64-unknown-linux-musl/bin/breakinator --help
+```
 
-```
-wget https://github.com/jheinz27/breakinator/releases/download/v{x.y.z}/breakinator-v{x.y.z}-{system}.tar.gz
-tar -xvzf breakinator-v{x.y.z}-{system}.tar.gz
-breakinator-v{x.y.z}-{system}/bin/breakinator --help
-```
+Other versions, including macOS, are available on the [Releases](../../releases) page.
 
 ### Bioconda
 ```
-conda install -c bioconda -c conda-forge breakinator=1.1.1
+conda install -c bioconda -c conda-forge breakinator
 ```
 
 ### Install from source
@@ -38,10 +38,13 @@ cargo build --release
 - rust-htslib = "0.46.0"
 ## Breakinator Usage
 ```
+Flag foldbacks and chimeric reads from SAM/BAM/CRAM or PAF input
+
 Usage: breakinator [OPTIONS] --input <FILE>
 
 Options:
-  -i, --input <FILE>       SAM/BAM/CRAM file sorted by read IDs
+  -i, --input <FILE>       Input SAM/BAM/CRAM/PAF file (grouped by read ID unless -s is given)
+  -s, --sorted             Input is coordinate sorted
       --paf                Input file is PAF
   -q, --min-mapq <INT>     Minimum mapping quality [default: 10]
   -a, --min-map-len <INT>  Minimum alignment length (bps) [default: 200]

@@ -11,7 +11,7 @@ pub struct Cli {
 
     // input is coordinate sorted
     #[arg(short = 's', long, value_name = "BOOL", default_value_t = false, help = "Input is coordinate sorted")]
-    pub sorted: bool,x
+    pub sorted: bool, 
 
     // input is PAF file
     #[arg(long,value_name = "BOOL", default_value_t = false, help = "Input file is PAF")]
