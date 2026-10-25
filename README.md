@@ -69,10 +69,21 @@ It is important to note that Breakinator currently only supports name-sorted fil
 minimap2 -ax map-ont  genome.fa reads.fastq > alignments.sam
 ./breakinator -i alignments.sam -o breakinator_out.txt
 ```
+
+#### Coordinate sorted input files (`-s`)
+As of version 1.2 Breakinator supports coordinate sorted input files with the `--sorted / -s` flag (with slightly higher memory requirements)
+```
+./breakinator -i alignments_sorted.bam -s -o breakinator_out.txt
+```
+
 #### For PAF (include `--paf` flag)
 ```
 minimap2 -cx map-ont --secondary=no genome.fa reads.fastq > alignments.paf
 ./breakinator -i alignments.sam --paf -o breakinator_out.txt
+```
+PAF input files are still required to be name sorted, or name collated, if the file is not, we recommend piping to stdin: 
+```
+sort -k1,1 input.paf | breakinator --paf -i - -o breakinator_out.txt 
 ```
 
 ## Generating PAF files
