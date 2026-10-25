@@ -6,12 +6,12 @@ use clap::Parser;
 
 pub struct Cli {
     // 
-    #[arg(short = 'i', long, value_name = "FILE", required = true, help="SAM/BAM/CRAM file sorted by read IDs")]
+    #[arg(short = 'i', long, value_name = "FILE", required = true, help = "Input SAM/BAM/CRAM/PAF file (grouped by read ID unless -s is given)")]
     pub input: String,
 
     // input is coordinate sorted
     #[arg(short = 's', long, value_name = "BOOL", default_value_t = false, help = "Input is coordinate sorted")]
-    pub sorted: bool,
+    pub sorted: bool,x
 
     // input is PAF file
     #[arg(long,value_name = "BOOL", default_value_t = false, help = "Input file is PAF")]
@@ -30,7 +30,7 @@ pub struct Cli {
     pub no_sym: bool,
 
     // reference genome used for cram compression
-    #[arg(short, long, value_name = "FASTA", help="Reference genome FASTA used (must be provided for CRAM input")]
+    #[arg(short, long, value_name = "FASTA", help="Reference genome FASTA used (must be provided for CRAM input)")]
     pub genome: Option<String>,
 
     // [0-1], With --no_sym, Proportion from center on either side to be considered foldback artifact
