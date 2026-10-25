@@ -62,28 +62,33 @@ Options:
 ```
 ### Example Usage 
 
-It is important to note that Breakinator currently only supports name-sorted files (the default output of minimap2) as it only parses one sequential group of lines with the same read ID at a time to avoid reading the whole file into memory, so breakinator should be run before any sorting of the file. 
+By default, Breakinator expects alignments grouped by read ID (the default output of minimap2), and processes one read at a time to keep memory low. For coordinate-sorted SAM/BAM/CRAM files, use `-s` (see below).
 
 #### For SAM/BAM/CRAM
 ```
 minimap2 -ax map-ont  genome.fa reads.fastq > alignments.sam
 ./breakinator -i alignments.sam -o breakinator_out.txt
 ```
+Input can also be streamed from stdin with `-i -`, e.g. directly from minimap2 without writing a SAM file:
+```
+minimap2 -ax map-ont genome.fa reads.fastq | ./breakinator -i - -o breakinator_out.txt
+```
 
 #### Coordinate sorted input files (`-s`)
-As of version 1.2 Breakinator supports coordinate sorted input files with the `--sorted / -s` flag (with slightly higher memory requirements)
+As of version 1.2 Breakinator supports coordinate sorted input files with the `--sorted / -s` flag (typically under 100 MB of extra memory)
 ```
 ./breakinator -i alignments_sorted.bam -s -o breakinator_out.txt
+./breakinator -i alignments_sorted.cram -s -g genome.fa -o breakinator_out.txt
 ```
 
 #### For PAF (include `--paf` flag)
 ```
 minimap2 -cx map-ont --secondary=no genome.fa reads.fastq > alignments.paf
-./breakinator -i alignments.sam --paf -o breakinator_out.txt
+./breakinator -i alignments.paf --paf -o breakinator_out.txt
 ```
-PAF input files are still required to be name sorted, or name collated, if the file is not, we recommend piping to stdin: 
+PAF input must still be grouped by read name. If your PAF has been sorted by position, sort it by read name and pipe it in:
 ```
-sort -k1,1 input.paf | breakinator --paf -i - -o breakinator_out.txt 
+sort -k1,1 input.paf | ./breakinator --paf -i - -o breakinator_out.txt
 ```
 
 ## Generating PAF files
