@@ -1,10 +1,25 @@
-
-<div style="text-align: center;">
-  <img src="https://github.com/user-attachments/assets/447a923e-c4d1-4331-8a81-130f48144ca0" alt="Breakinator Logo" width="300"/>
-</div>
-
 # The Breakinator
+
+<img src="https://github.com/user-attachments/assets/447a923e-c4d1-4331-8a81-130f48144ca0" alt="Breakinator Logo" width="300" align="left" hspace="20"/>
+
 The Breakinator identifies and flags putative artifact reads (foldbacks and chimeric) by parsing SAM/BAM/CRAM or PAF alignment files.
+
+<br clear="left"/>
+
+## Table of Contents
+- [Installation](#installation)
+  - [Prebuilt Binaries](#prebuilt-binaries)
+  - [Bioconda](#bioconda)
+  - [Install from source](#install-from-source)
+- [Breakinator Usage](#breakinator-usage)
+  - [Example Usage](#example-usage)
+    - [For SAM/BAM/CRAM](#for-sambamcram)
+    - [Coordinate sorted input files (`-s`)](#coordinate-sorted-input-files--s)
+    - [For PAF](#for-paf-include---paf-flag)
+- [Generating PAF files](#generating-paf-files)
+- [Optional: turn off symmetry filter for foldback artifacts](#optional-turn-off-symmetry-filter-for-foldback-artifacts)
+- [Merging Breakpoints Into Consensus Locations](#merging-breakpoints-into-consensus-locations)
+- [Citation](#citation)
 
 ## Installation
 
