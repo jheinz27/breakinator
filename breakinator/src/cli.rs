@@ -9,6 +9,10 @@ pub struct Cli {
     #[arg(short = 'i', long, value_name = "FILE", required = true, help="SAM/BAM/CRAM file sorted by read IDs")]
     pub input: String,
 
+    // input is coordinate sorted
+    #[arg(short = 's', long, value_name = "BOOL", default_value_t = false, help = "Input is coordinate sorted")]
+    pub sorted: bool,
+
     // input is PAF file
     #[arg(long,value_name = "BOOL", default_value_t = false, help = "Input file is PAF")]
     pub paf: bool,

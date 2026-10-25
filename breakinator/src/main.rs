@@ -7,6 +7,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     
     let is_stdin = args.input == "-";
     if args.paf {
+        if args.sorted {
+            eprintln!("ERROR: --sorted is only supported for SAM/BAM/CRAM input");
+            std::process::exit(1);
+        }
         if !is_stdin && !args.input.to_lowercase().ends_with(".paf") {
             eprintln!("ERROR: File name does not end in paf-ensure file is paf");
         }
