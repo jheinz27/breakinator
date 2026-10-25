@@ -154,6 +154,8 @@ optional arguments:
 ```
 
 ## Citation
-If the Breakinator has helped you in your research, please cite our preprint at: https://www.biorxiv.org/content/10.1101/2025.07.15.664946v2.abstract
+If the Breakinator has helped you in your research, please cite our [paper](https://link.springer.com/article/10.1186/s12864-025-12492-y).
+
+Heinz, J.M., Meyerson, M. & Li, H. "Detecting foldback artifacts in long-reads" *BMC Genomics* 27, 144 (2026). doi:[10.1186/s12864-025-12492-y](https://doi.org/10.1186/s12864-025-12492-y)
 
 
