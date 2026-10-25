@@ -27,7 +27,7 @@ The Breakinator identifies and flags putative artifact reads (foldbacks and chim
 
 ```
 wget https://github.com/jheinz27/breakinator/releases/download/v1.2.0/breakinator-v1.2.0-x86_64-unknown-linux-musl.tar.gz
-tar -xzf breakinator-v1.2.0-x86_64-unknown-linux-musl.tar.gz
+tar -xvzf breakinator-v1.2.0-x86_64-unknown-linux-musl.tar.gz
 ./breakinator-v1.2.0-x86_64-unknown-linux-musl/bin/breakinator --help
 ```
 
@@ -90,7 +90,7 @@ minimap2 -ax map-ont genome.fa reads.fastq | ./breakinator -i - -o breakinator_o
 ```
 
 #### Coordinate sorted input files (`-s`)
-As of version 1.2 Breakinator supports coordinate sorted input files with the `--sorted / -s` flag (typically under 100 MB of extra memory)
+As of version 1.2 Breakinator supports coordinate sorted input files with the `--sorted / -s` flag (requires additional memory, typically less than 100 MB extra)
 ```
 ./breakinator -i alignments_sorted.bam -s -o breakinator_out.txt
 ./breakinator -i alignments_sorted.cram -s -g genome.fa -o breakinator_out.txt
@@ -101,7 +101,7 @@ As of version 1.2 Breakinator supports coordinate sorted input files with the `-
 minimap2 -cx map-ont --secondary=no genome.fa reads.fastq > alignments.paf
 ./breakinator -i alignments.paf --paf -o breakinator_out.txt
 ```
-PAF input must still be grouped by read name. If your PAF has been sorted by position, sort it by read name and pipe it in:
+PAF input must still be grouped by read name. If PAF has been sorted by position, we recommend sorting it by read name and piping the result directly:
 ```
 sort -k1,1 input.paf | ./breakinator --paf -i - -o breakinator_out.txt
 ```
