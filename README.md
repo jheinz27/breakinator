@@ -2,7 +2,7 @@
 
 <img src="https://github.com/user-attachments/assets/447a923e-c4d1-4331-8a81-130f48144ca0" alt="Breakinator Logo" width="300" align="left" hspace="20"/>
 
-## Table of Contents
+### Table of Contents
 [Installation](#installation)<br>
 &emsp;[Prebuilt Binaries](#prebuilt-binaries)<br>
 &emsp;[Bioconda](#bioconda)<br>
