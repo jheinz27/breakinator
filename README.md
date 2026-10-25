@@ -2,24 +2,24 @@
 
 <img src="https://github.com/user-attachments/assets/447a923e-c4d1-4331-8a81-130f48144ca0" alt="Breakinator Logo" width="300" align="left" hspace="20"/>
 
-The Breakinator identifies and flags putative artifact reads (foldbacks and chimeric) by parsing SAM/BAM/CRAM or PAF alignment files.
+## Table of Contents
+[Installation](#installation)<br>
+&emsp;[Prebuilt Binaries](#prebuilt-binaries)<br>
+&emsp;[Bioconda](#bioconda)<br>
+&emsp;[Install from source](#install-from-source)<br>
+[Breakinator Usage](#breakinator-usage)<br>
+&emsp;[Example Usage](#example-usage)<br>
+&emsp;&emsp;[For SAM/BAM/CRAM](#for-sambamcram)<br>
+&emsp;&emsp;[Coordinate sorted input files (`-s`)](#coordinate-sorted-input-files--s)<br>
+&emsp;&emsp;[For PAF](#for-paf-include---paf-flag)<br>
+[Generating PAF files](#generating-paf-files)<br>
+[Optional: turn off symmetry filter for foldback artifacts](#optional-turn-off-symmetry-filter-for-foldback-artifacts)<br>
+[Merging Breakpoints Into Consensus Locations](#merging-breakpoints-into-consensus-locations)<br>
+[Citation](#citation)
 
 <br clear="left"/>
 
-## Table of Contents
-- [Installation](#installation)
-  - [Prebuilt Binaries](#prebuilt-binaries)
-  - [Bioconda](#bioconda)
-  - [Install from source](#install-from-source)
-- [Breakinator Usage](#breakinator-usage)
-  - [Example Usage](#example-usage)
-    - [For SAM/BAM/CRAM](#for-sambamcram)
-    - [Coordinate sorted input files (`-s`)](#coordinate-sorted-input-files--s)
-    - [For PAF](#for-paf-include---paf-flag)
-- [Generating PAF files](#generating-paf-files)
-- [Optional: turn off symmetry filter for foldback artifacts](#optional-turn-off-symmetry-filter-for-foldback-artifacts)
-- [Merging Breakpoints Into Consensus Locations](#merging-breakpoints-into-consensus-locations)
-- [Citation](#citation)
+The Breakinator identifies and flags putative artifact reads (foldbacks and chimeric) by parsing SAM/BAM/CRAM or PAF alignment files.
 
 ## Installation
 
